@@ -114,6 +114,7 @@ QState Screen_character_create(Screen * const me, QEvt const * const e) {
     }
     return status;
 }
+
 QState Screen_character_select(Screen * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
@@ -134,6 +135,7 @@ QState Screen_character_select(Screen * const me, QEvt const * const e) {
     }
     return status;
 }
+
 QState Screen_in_game(Screen * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
@@ -142,6 +144,11 @@ QState Screen_in_game(Screen * const me, QEvt const * const e) {
         	BSP_show_screen(UI_IN_GAME);
             status = Q_HANDLED();
             break;
+        }
+        case EXIT_GAME: {
+        	BSP_show_screen(UI_CHARACTER_SELECT);
+			status = Q_TRAN(&Screen_character_select);
+			break;
         }
         default: {
             status = Q_SUPER(&QHsm_top);

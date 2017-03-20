@@ -49,6 +49,9 @@ QState Vessel_active(Vessel * const me, QEvt const * const e) {
         	QActive_subscribe(&me->super, WEEK_ELAPSED);
         	QActive_subscribe(&me->super, MONTH_ELAPSED);
         	QActive_subscribe(&me->super, YEAR_ELAPSED);
+
+        	QActive_subscribe(&me->super, ENTER_GAME);
+
             status = Q_HANDLED();
             break;
         }
@@ -74,6 +77,14 @@ QState Vessel_active(Vessel * const me, QEvt const * const e) {
         }
         case YEAR_ELAPSED: {
         	printf("[Vessel] A year has elapsed\n");
+        	status = Q_HANDLED();
+        	break;
+        }
+        case ENTER_GAME: {
+        	status = Q_HANDLED();
+        	break;
+        }
+        case EXIT_GAME: {
         	status = Q_HANDLED();
         	break;
         }

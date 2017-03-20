@@ -23,6 +23,7 @@ enum Signals {
 	CHARACTER_CREATED,
 	CHARACTER_CREATION_FAILED,
 	ENTER_GAME,
+	EXIT_GAME,
 
     MAX_PUB_SIG,          /* the last published signal */
 
