@@ -61,19 +61,9 @@ void BSP_init() {
            "Press ESC to quit...\n",
            QP_VERSION_STR);
 }
-/*..........................................................................*/
-void BSP_ledOff(void) {
-    printf("LED OFF\n");
-}
-/*..........................................................................*/
-void BSP_ledOn(void) {
-    printf("LED ON\n");
-}
+
 /*..........................................................................*/
 void Q_onAssert(char const *module, int loc) {
-    /*
-    * NOTE: add here your application-specific error handling
-    */
     (void)module;
     (void)loc;
     QS_ASSERTION(module, loc, (uint32_t)10000U); /* report assertion to QS */

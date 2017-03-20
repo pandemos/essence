@@ -65,10 +65,10 @@ QState TemporalUniverse_active(TemporalUniverse * const me, QEvt const * const e
     switch (e->sig) {
         case Q_ENTRY_SIG: {
         	QTimeEvt_armX(&me->hourEvt, BSP_TICKS_PER_SEC, BSP_TICKS_PER_SEC);
-			QTimeEvt_armX(&me->dayEvt, BSP_TICKS_PER_SEC*24, BSP_TICKS_PER_SEC*24);
-			QTimeEvt_armX(&me->weekEvt, BSP_TICKS_PER_SEC*24*7, BSP_TICKS_PER_SEC*24*7);
-			QTimeEvt_armX(&me->monthEvt, BSP_TICKS_PER_SEC*24*30, BSP_TICKS_PER_SEC*24*30);
-			QTimeEvt_armX(&me->yearEvt, BSP_TICKS_PER_SEC*24*365, BSP_TICKS_PER_SEC*24*365);
+			QTimeEvt_armX(&me->dayEvt, DAY_TICKS, DAY_TICKS);
+			QTimeEvt_armX(&me->weekEvt, WEEK_TICKS, WEEK_TICKS);
+			QTimeEvt_armX(&me->monthEvt, MONTH_TICKS, MONTH_TICKS);
+			QTimeEvt_armX(&me->yearEvt, YEAR_TICKS, YEAR_TICKS);
             status = Q_HANDLED();
             break;
         }

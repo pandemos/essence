@@ -1,7 +1,9 @@
 #ifndef signals_h
 #define signals_h
 
-enum BlinkySignals {
+#include "qpc.h"
+
+enum Signals {
     DUMMY_SIG = Q_USER_SIG,
 
 	HOUR_ELAPSED,

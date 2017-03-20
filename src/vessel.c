@@ -44,13 +44,11 @@ QState Vessel_active(Vessel * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
         case Q_ENTRY_SIG: {
-        	printf("Subscribing\n");
         	QActive_subscribe(&me->super, HOUR_ELAPSED);
         	QActive_subscribe(&me->super, DAY_ELAPSED);
         	QActive_subscribe(&me->super, WEEK_ELAPSED);
         	QActive_subscribe(&me->super, MONTH_ELAPSED);
         	QActive_subscribe(&me->super, YEAR_ELAPSED);
-        	printf("Subscribed\n");
             status = Q_HANDLED();
             break;
         }

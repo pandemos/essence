@@ -1,6 +1,6 @@
+#include "directedbehaviour.h"
 #include "qpc.h"
 #include "signals.h"
-#include "blinky.h"
 #include "user.h"
 #include "screen.h"
 #include "input.h"
@@ -8,7 +8,6 @@
 #include "physicaluniverse.h"
 #include "temporaluniverse.h"
 #include "staticbehaviour.h"
-#include "controlledbehaviour.h"
 #include "priorityqueuebehaviour.h"
 #include "prioritycurvebehaviour.h"
 #include "bsp.h"
@@ -18,14 +17,13 @@ int main() {
     static QSubscrList l_subscrSto[MAX_PUB_SIG];
     static QF_MPOOL_EL(QEvt) l_smlPoolSto[20]; /* small pool */
 
-    static QEvt const *l_blinkyQSto[10]; /* Event queue storage for Blinky */
     static QEvt const *l_userQSto[10];
     static QEvt const *l_screenQSto[10];
     static QEvt const *l_vesselQSto[10];
     static QEvt const *l_physicaluniverseQSto[10];
     static QEvt const *l_temporaluniverseQSto[10];
     static QEvt const *l_staticbehaviourQSto[10];
-    static QEvt const *l_controlledbehaviourQSto[10];
+    static QEvt const *l_directedbehaviourQSto[10];
     static QEvt const *l_priorityqueuebehaviourQSto[10];
     static QEvt const *l_prioritycurvebehaviourQSto[10];
     static QEvt const *l_inputQSto[10];
@@ -33,19 +31,10 @@ int main() {
     QF_init();  /* initialize the framework and the underlying RT kernel */
     BSP_init(); /* initialize the Board Support Package */
 
-
     QF_psInit(l_subscrSto, Q_DIM(l_subscrSto));
     QF_poolInit(l_smlPoolSto, sizeof(l_smlPoolSto), sizeof(l_smlPoolSto[0]));
 
     /* instantiate and start the active objects... */
-    Blinky_ctor();
-    QACTIVE_START(AO_Blinky,      /* AO pointer to start */
-                  1U,             /* unique QP priority of the AO */
-                  l_blinkyQSto,   /* storage for the AO's queue */
-                  Q_DIM(l_blinkyQSto), /* length of the queue [entries] */
-                  (void *)0,      /* stack storage (not used in QK) */
-                  0U,             /* stack size [bytes] (not used in QK) */
-                  (QEvt *)0);     /* initial event (or 0) */
 
     User_ctor();
     QACTIVE_START(AO_User,
@@ -101,11 +90,11 @@ int main() {
 				  0U,
 				  (QEvt*)0);
 
-	ControlledBehaviour_ctor();
-	QACTIVE_START(AO_ControlledBehaviour,
+	DirectedBehaviour_ctor();
+	QACTIVE_START(AO_DirectedBehaviour,
 				  8U, /* This must be a unique QP priority ID */
-				  l_controlledbehaviourQSto,
-				  Q_DIM(l_controlledbehaviourQSto),
+				  l_directedbehaviourQSto,
+				  Q_DIM(l_directedbehaviourQSto),
 				  (void *)0,
 				  0U,
 				  (QEvt*)0);
