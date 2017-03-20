@@ -43,6 +43,7 @@ QState PriorityQueueBehaviour_active(PriorityQueueBehaviour * const me, QEvt con
     switch (e->sig) {
         case Q_ENTRY_SIG: {
             status = Q_HANDLED();
+            break;
         }
         default: {
             status = Q_SUPER(&QHsm_top);

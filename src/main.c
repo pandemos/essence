@@ -1,4 +1,5 @@
 #include "qpc.h"
+#include "signals.h"
 #include "blinky.h"
 #include "user.h"
 #include "screen.h"
@@ -13,6 +14,9 @@
 
 /*..........................................................................*/
 int main() {
+    static QSubscrList l_subscrSto[MAX_PUB_SIG];
+    static QF_MPOOL_EL(QEvt) l_smlPoolSto[20]; /* small pool */
+
     static QEvt const *l_blinkyQSto[10]; /* Event queue storage for Blinky */
     static QEvt const *l_userQSto[10];
     static QEvt const *l_screenQSto[10];
@@ -28,8 +32,10 @@ int main() {
     QF_init();  /* initialize the framework and the underlying RT kernel */
     BSP_init(); /* initialize the Board Support Package */
 
-    /* publish-subscribe not used, no call to QF_psInit() */
-    /* dynamic event allocation not used, no call to QF_poolInit() */
+
+    QF_psInit(l_subscrSto, Q_DIM(l_subscrSto));
+    QF_poolInit(l_smlPoolSto, sizeof(l_smlPoolSto), sizeof(l_smlPoolSto[0]));
+
 
     /* instantiate and start the active objects... */
     Blinky_ctor();
@@ -59,11 +65,11 @@ int main() {
 				  0U,
 				  (QEvt*)0);
 
-	Vessel_ctor();
-	QACTIVE_START(AO_Vessel,
+	TemporalUniverse_ctor();
+	QACTIVE_START(AO_TemporalUniverse,
 				  4U, /* This must be a unique QP priority ID */
-				  l_vesselQSto,
-				  Q_DIM(l_vesselQSto),
+				  l_temporaluniverseQSto,
+				  Q_DIM(l_temporaluniverseQSto),
 				  (void *)0,
 				  0U,
 				  (QEvt*)0);
@@ -73,15 +79,6 @@ int main() {
 				  5U, /* This must be a unique QP priority ID */
 				  l_physicaluniverseQSto,
 				  Q_DIM(l_physicaluniverseQSto),
-				  (void *)0,
-				  0U,
-				  (QEvt*)0);
-
-	TemporalUniverse_ctor();
-	QACTIVE_START(AO_TemporalUniverse,
-				  6U, /* This must be a unique QP priority ID */
-				  l_temporaluniverseQSto,
-				  Q_DIM(l_temporaluniverseQSto),
 				  (void *)0,
 				  0U,
 				  (QEvt*)0);
@@ -118,6 +115,15 @@ int main() {
 				  10U, /* This must be a unique QP priority ID */
 				  l_prioritycurvebehaviourQSto,
 				  Q_DIM(l_prioritycurvebehaviourQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
+
+	Vessel_ctor();
+	QACTIVE_START(AO_Vessel,
+				  11U, /* This must be a unique QP priority ID */
+				  l_vesselQSto,
+				  Q_DIM(l_vesselQSto),
 				  (void *)0,
 				  0U,
 				  (QEvt*)0);

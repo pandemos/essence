@@ -1,12 +1,14 @@
 // Active Object Source
 #include "qpc.h"
 #include "vessel.h"
+#include "signals.h"
 #include "bsp.h"
 
 //Q_DEFINE_THIS_FILE
 
 typedef struct {
     QActive super;
+
 } Vessel;
 
 static Vessel l_vessel;
@@ -42,7 +44,40 @@ QState Vessel_active(Vessel * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
         case Q_ENTRY_SIG: {
+        	printf("Subscribing\n");
+        	QActive_subscribe(&me->super, HOUR_ELAPSED);
+        	QActive_subscribe(&me->super, DAY_ELAPSED);
+        	QActive_subscribe(&me->super, WEEK_ELAPSED);
+        	QActive_subscribe(&me->super, MONTH_ELAPSED);
+        	QActive_subscribe(&me->super, YEAR_ELAPSED);
+        	printf("Subscribed\n");
             status = Q_HANDLED();
+            break;
+        }
+        case HOUR_ELAPSED: {
+			printf("[Vessel] An hour has elapsed\n");
+			status = Q_HANDLED();
+			break;
+		}
+        case DAY_ELAPSED: {
+        	printf("[Vessel] A day has elapsed\n");
+        	status = Q_HANDLED();
+        	break;
+        }
+        case WEEK_ELAPSED: {
+        	printf("[Vessel] A week has elapsed\n");
+        	status = Q_HANDLED();
+        	break;
+        }
+        case MONTH_ELAPSED: {
+        	printf("[Vessel] A month has elapsed\n");
+        	status = Q_HANDLED();
+        	break;
+        }
+        case YEAR_ELAPSED: {
+        	printf("[Vessel] A year has elapsed\n");
+        	status = Q_HANDLED();
+        	break;
         }
         default: {
             status = Q_SUPER(&QHsm_top);

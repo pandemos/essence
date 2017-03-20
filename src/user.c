@@ -43,6 +43,7 @@ QState User_active(User * const me, QEvt const * const e) {
     switch (e->sig) {
         case Q_ENTRY_SIG: {
             status = Q_HANDLED();
+            break;
         }
         default: {
             status = Q_SUPER(&QHsm_top);
