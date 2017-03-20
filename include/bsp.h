@@ -14,6 +14,17 @@ enum UiSignals {
 	UI_IN_GAME
 };
 
+enum DataTypes {
+	DATA_TYPE_NULL = 0,
+	DATA_TYPE_INT,
+	DATA_TYPE_STRING
+};
+
+enum DataKeys {
+	DATA_ROOT = 100,
+	DATA_UNKNOWN = 101
+};
+
 typedef struct UiCharacterTag {
 
 	unsigned int character_id;
@@ -47,5 +58,11 @@ typedef struct UiInGameTag {
 void const BSP_set_character_data(UiCharacterData data);
 void const BSP_set_user_data(UiUserData data);
 void const BSP_set_in_game_data(UiInGameData data);
+
+int const BSP_data_get_int(enum_t key);
+void const BSP_data_set_int(enum_t key, int value);
+
+int const BSP_data_get_string(enum_t key, char* string_data);
+void const BSP_data_set_string(enum_t key, size_t string_data_size, char* string_data);
 
 #endif /* bsp_h */

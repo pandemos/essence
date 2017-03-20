@@ -1,6 +1,7 @@
 /* Essence Board Support Package, POSIX */
 #include "qpc.h"
 #include "bsp.h"
+#include "qassert.h"
 
 #include "signals.h"
 
@@ -20,11 +21,23 @@ Q_DEFINE_THIS_FILE
 /* Local objects -----------------------------------------------------------*/
 static struct termios l_tsav; /* structure with saved terminal attributes */
 
+// TODO: This is the worst possible database
+typedef struct {
+	enum_t key;
+	enum_t type;
+	size_t value_size;
+	void* value;
+} Datum;
+static size_t data_size;
+static Datum data[512];
+
 /*..........................................................................*/
 void QF_onStartup(void) {     /* startup callback */
     struct termios tio;       /* modified terminal attributes */
 
-    tcgetattr(0, &l_tsav);    /* save the current terminal attributes */
+    tcgetattr(0, &l_tsav);    /* save the current terminal attributes */void* const BSP_data_get(enum_t key) {
+
+    }
     tcgetattr(0, &tio);       /* obtain the current terminal attributes */
     tio.c_lflag &= ~(ICANON | ECHO); /* disable the canonical mode & echo */
     tcsetattr(0, TCSANOW, &tio);  /* set the new attributes */
@@ -79,6 +92,47 @@ void const BSP_set_in_game_data(UiInGameData data) {
 	// TODO
 }
 
+// Forward-declare internals
+Datum* get_data_obj_by_key(enum_t key);
+
+int const BSP_data_get_int(enum_t key) {
+	Datum* datum = get_data_obj_by_key(key);
+	Q_ASSERT(datum > 0 && datum->type == DATA_TYPE_INT);
+	return (int)datum->value;
+}
+void const BSP_data_set_int(enum_t key, int value) {
+	Datum* datum = get_data_obj_by_key(key);
+	if (datum == 0) {
+		data[data_size].key = key;
+		data[data_size].type = DATA_TYPE_INT;
+		data[data_size].value_size = sizeof(int);
+		data[data_size].value = (void*)value;
+		datum = &data[data_size];
+		data_size++;
+	}
+	data[data_size].value_size = sizeof(int);
+	data[data_size].value = (void*)value;
+}
+
+int const BSP_data_get_string(enum_t key, char* string_data) {
+	Datum* datum = get_data_obj_by_key(key);
+	Q_ASSERT(datum > 0 && datum->type == DATA_TYPE_STRING);
+	string_data = (char*)datum->value;
+	return (int)datum->value_size;
+}
+
+void const BSP_data_set_string(enum_t key, size_t string_data_size, char* string_data) {
+	Datum* datum = get_data_obj_by_key(key);
+	if (datum == 0) {
+		data[data_size].key = key;
+		data[data_size].type = DATA_TYPE_STRING;
+		datum = &data[data_size];
+		data_size++;
+	}
+	data[data_size].value_size = string_data_size;
+	data[data_size].value = (void*)string_data;
+}
+
 /*..........................................................................*/
 void Q_onAssert(char const *module, int loc) {
     (void)module;
@@ -86,4 +140,15 @@ void Q_onAssert(char const *module, int loc) {
     QS_ASSERTION(module, loc, (uint32_t)10000U); /* report assertion to QS */
     fprintf(stderr, "Assertion failed in %s, location %d", module, loc);
     exit(-1);
+}
+
+// Internals
+
+Datum* get_data_obj_by_key(enum_t key) {
+	for (int i = 0; i < 512; i++) {
+		if (data[i].key == key) {
+			return &data[i];
+		}
+	}
+	return (Datum*)0;
 }

@@ -1,6 +1,7 @@
 #include "directedbehaviour.h"
 #include "qpc.h"
 #include "signals.h"
+#include "database.h"
 #include "user.h"
 #include "screen.h"
 #include "input.h"
@@ -17,6 +18,7 @@ int main() {
     static QSubscrList l_subscrSto[MAX_PUB_SIG];
     static QF_MPOOL_EL(QEvt) l_smlPoolSto[20]; /* small pool */
 
+    static QEvt const *l_databaseQSto[10];
     static QEvt const *l_userQSto[10];
     static QEvt const *l_screenQSto[10];
     static QEvt const *l_vesselQSto[10];
@@ -35,6 +37,15 @@ int main() {
     QF_poolInit(l_smlPoolSto, sizeof(l_smlPoolSto), sizeof(l_smlPoolSto[0]));
 
     /* instantiate and start the active objects... */
+
+    Database_ctor();
+    QACTIVE_START(AO_Database,
+                  1U, /* This must be a unique QP priority ID */
+                  l_databaseQSto,
+                  Q_DIM(l_databaseQSto),
+                  (void *)0,
+                  0U,
+                  (QEvt*)0);
 
     User_ctor();
     QACTIVE_START(AO_User,
