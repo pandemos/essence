@@ -25,10 +25,15 @@ enum Signals {
 	ENTER_GAME,
 	EXIT_GAME,
 
+	CREATE_VESSEL,
+	CREATE_VESSEL_SUCCESSFUL,
+	CREATE_VESSEL_FAILED,
+	DESTROY_VESSEL,
+	DESTROY_VESSEL_SUCCESSFUL,
+	DESTROY_VESSEL_FAILED,
+	MOVE_VESSEL,
+
     MAX_PUB_SIG,          /* the last published signal */
-
-    TIMEOUT_SIG,
-
     MAX_SIG               /* the last signal */
 };
 
@@ -41,23 +46,55 @@ typedef struct KeyPressedTag {
 typedef struct LoginTag {
 	QEvt super;
 
-	int username_size;
+	size_t username_size;
 	char* username;
 
-	int password_size;
+	size_t password_size;
 	char* password;
 } LoginEvt;
 
 typedef struct UserTag {
 	QEvt super;
 
-	int username_size;
+	unsigned int user_id;
+
+	size_t username_size;
 	char* username;
 
-	int password_size;
+	size_t password_size;
 	char* password;
 
-	int n_characters;
+	size_t n_characters;
 } UserEvt;
+
+typedef struct CreateVesselTag {
+
+	unsigned int vessel_id;
+	unsigned int x;
+	unsigned int y;
+	unsigned int z;
+
+} CreateVesselEvt;
+
+typedef struct DestroyVesselTag {
+
+	unsigned int vessel_id;
+
+} DestroyVesselEvt;
+
+typedef struct VesselHandleTag {
+
+	void* vessel_handle;
+
+} VesselHandleEvt;
+
+typedef struct MoveVesselTag {
+
+	void* vessel_handle;
+	unsigned int x;
+	unsigned int y;
+	unsigned int z;
+
+} MoveVesselEvt;
 
 #endif /* signals_h */

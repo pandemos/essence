@@ -42,9 +42,42 @@ QState PhysicalUniverse_active(PhysicalUniverse * const me, QEvt const * const e
     QState status;
     switch (e->sig) {
         case Q_ENTRY_SIG: {
+        	QActive_subscribe(&me->super, ENTER_GAME);
+        	QActive_subscribe(&me->super, EXIT_GAME);
+        	QActive_subscribe(&me->super, CREATE_VESSEL);
+        	QActive_subscribe(&me->super, DESTROY_VESSEL);
+        	QActive_subscribe(&me->super, MOVE_VESSEL);
             status = Q_HANDLED();
             break;
         }
+        case ENTER_GAME: {
+        	CreateVesselEvt* evt = Q_EVT_CAST(CreateVesselEvt);
+        	(void)evt;
+        	status = Q_HANDLED();
+        	break;
+        }
+        case EXIT_GAME: {
+        	status = Q_HANDLED();
+        	break;
+        }
+        case CREATE_VESSEL: {
+        	CreateVesselEvt* evt = Q_EVT_CAST(CreateVesselEvt);
+			(void)evt;
+        	status = Q_HANDLED();
+        	break;
+        }
+        case DESTROY_VESSEL: {
+        	DestroyVesselEvt* evt = Q_EVT_CAST(DestroyVesselEvt);
+        	(void)evt;
+			status = Q_HANDLED();
+			break;
+		}
+        case MOVE_VESSEL: {
+        	MoveVesselEvt* evt = Q_EVT_CAST(MoveVesselEvt);
+        	(void)evt;
+			status = Q_HANDLED();
+			break;
+		}
         default: {
             status = Q_SUPER(&QHsm_top);
             break;

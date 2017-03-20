@@ -8,7 +8,7 @@ void BSP_init(void);
 void BSP_show_screen(enum_t screen);
 
 enum UiSignals {
-	UI_LOGIN,
+	UI_LOGIN = 100,
 	UI_CHARACTER_CREATE,
 	UI_CHARACTER_SELECT,
 	UI_IN_GAME
@@ -16,20 +16,24 @@ enum UiSignals {
 
 typedef struct UiCharacterTag {
 
-	int character_name_size;
+	unsigned int character_id;
+
+	size_t character_name_size;
 	char* character_name;
 
 } UiCharacterData;
 
 typedef struct UiUserTag {
 
-	int username_size;
+	unsigned int user_id;
+
+	size_t username_size;
 	char* username;
 
-	int password_size;
+	size_t password_size;
 	char* password;
 
-	int n_characters;
+	size_t n_characters;
 	UiCharacterData* characters;
 
 } UiUserData;
