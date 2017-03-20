@@ -7,8 +7,13 @@
 
 //Q_DEFINE_THIS_FILE
 
+#define INPUT_BUFFER_SIZE 512
+
 typedef struct {
     QActive super;
+
+    int input_buffer_index;
+    char input_buffer[INPUT_BUFFER_SIZE];
 } Input;
 
 static Input l_input;
@@ -21,6 +26,14 @@ static QState Input_active(Input * const me, QEvt const * const e);
 
 void Input_ctor(void) {
     Input * const me = &l_input;
+
+    // Initialize input buffer
+    for (int i = 0; i < INPUT_BUFFER_SIZE; i++) {
+    	me->input_buffer[i] = 0;
+    }
+
+    me->input_buffer_index = 0;
+
     QActive_ctor(&me->super, Q_STATE_CAST(&Input_initial));
 }
 
@@ -55,6 +68,22 @@ QState Input_active(Input * const me, QEvt const * const e) {
         	if (key == '\33') {
         		QF_stop();
         	}
+        	else if (key == '\n') {
+        		// Enter, we should process what's been entered as a TODO
+        		me->input_buffer[me->input_buffer_index] = '\0';
+        		me->input_buffer_index++;
+        		printf("%s\n", me->input_buffer);
+        	    for (int i = 0; i < INPUT_BUFFER_SIZE; i++) {
+        	    	me->input_buffer[i] = 0;
+        	    }
+        	    me->input_buffer_index = 0;
+        	}
+        	else {
+        		me->input_buffer[me->input_buffer_index] = key;
+        		me->input_buffer_index++;
+        	}
+
+        	status = Q_HANDLED();
         	break;
         }
         default: {
