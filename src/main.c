@@ -3,6 +3,7 @@
 #include "blinky.h"
 #include "user.h"
 #include "screen.h"
+#include "input.h"
 #include "vessel.h"
 #include "physicaluniverse.h"
 #include "temporaluniverse.h"
@@ -27,7 +28,7 @@ int main() {
     static QEvt const *l_controlledbehaviourQSto[10];
     static QEvt const *l_priorityqueuebehaviourQSto[10];
     static QEvt const *l_prioritycurvebehaviourQSto[10];
-
+    static QEvt const *l_inputQSto[10];
 
     QF_init();  /* initialize the framework and the underlying RT kernel */
     BSP_init(); /* initialize the Board Support Package */
@@ -35,7 +36,6 @@ int main() {
 
     QF_psInit(l_subscrSto, Q_DIM(l_subscrSto));
     QF_poolInit(l_smlPoolSto, sizeof(l_smlPoolSto), sizeof(l_smlPoolSto[0]));
-
 
     /* instantiate and start the active objects... */
     Blinky_ctor();
@@ -65,9 +65,18 @@ int main() {
 				  0U,
 				  (QEvt*)0);
 
+	Input_ctor();
+	QACTIVE_START(AO_Input,
+	              4U, /* This must be a unique QP priority ID */
+	              l_inputQSto,
+	              Q_DIM(l_inputQSto),
+	              (void *)0,
+	              0U,
+	              (QEvt*)0);
+
 	TemporalUniverse_ctor();
 	QACTIVE_START(AO_TemporalUniverse,
-				  4U, /* This must be a unique QP priority ID */
+				  5U, /* This must be a unique QP priority ID */
 				  l_temporaluniverseQSto,
 				  Q_DIM(l_temporaluniverseQSto),
 				  (void *)0,
@@ -76,7 +85,7 @@ int main() {
 
 	PhysicalUniverse_ctor();
 	QACTIVE_START(AO_PhysicalUniverse,
-				  5U, /* This must be a unique QP priority ID */
+				  6U, /* This must be a unique QP priority ID */
 				  l_physicaluniverseQSto,
 				  Q_DIM(l_physicaluniverseQSto),
 				  (void *)0,
