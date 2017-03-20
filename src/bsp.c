@@ -62,6 +62,23 @@ void BSP_init() {
            QP_VERSION_STR);
 }
 
+// Update the UI to show a particular screen
+void BSP_show_screen(enum_t screen) {
+	// TODO
+}
+
+void const BSP_set_character_data(UiCharacterData data) {
+	// TODO
+}
+
+void const BSP_set_user_data(UiUserData data) {
+	// TODO
+}
+
+void const BSP_set_in_game_data(UiInGameData data) {
+	// TODO
+}
+
 /*..........................................................................*/
 void Q_onAssert(char const *module, int loc) {
     (void)module;

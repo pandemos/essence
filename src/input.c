@@ -55,6 +55,7 @@ QState Input_active(Input * const me, QEvt const * const e) {
         	if (key == '\33') {
         		QF_stop();
         	}
+        	break;
         }
         default: {
             status = Q_SUPER(&QHsm_top);
