@@ -1,43 +1,29 @@
-/*****************************************************************************
-* Product: "Blinky" example
-* Last Updated for Version: 5.4.0
-* Date of the Last Update:  2015-03-07
-*
-*                    Q u a n t u m     L e a P s
-*                    ---------------------------
-*                    innovating embedded systems
-*
-* Copyright (C) Quantum Leaps, LLC. state-machine.com.
-*
-* This program is open source software: you can redistribute it and/or
-* modify it under the terms of the GNU General Public License as published
-* by the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* Alternatively, this program may be distributed and modified under the
-* terms of Quantum Leaps commercial licenses, which expressly supersede
-* the GNU General Public License and are specifically designed for
-* licensees interested in retaining the proprietary status of their code.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*
-* Contact information:
-* Web  : http://www.state-machine.com
-* Email: info@state-machine.com
-*****************************************************************************/
 #include "qpc.h"
 #include "blinky.h"
+#include "user.h"
+#include "screen.h"
+#include "vessel.h"
+#include "physicaluniverse.h"
+#include "temporaluniverse.h"
+#include "staticbehaviour.h"
+#include "controlledbehaviour.h"
+#include "priorityqueuebehaviour.h"
+#include "prioritycurvebehaviour.h"
 #include "bsp.h"
 
 /*..........................................................................*/
 int main() {
     static QEvt const *l_blinkyQSto[10]; /* Event queue storage for Blinky */
+    static QEvt const *l_userQSto[10];
+    static QEvt const *l_screenQSto[10];
+    static QEvt const *l_vesselQSto[10];
+    static QEvt const *l_physicaluniverseQSto[10];
+    static QEvt const *l_temporaluniverseQSto[10];
+    static QEvt const *l_staticbehaviourQSto[10];
+    static QEvt const *l_controlledbehaviourQSto[10];
+    static QEvt const *l_priorityqueuebehaviourQSto[10];
+    static QEvt const *l_prioritycurvebehaviourQSto[10];
+
 
     QF_init();  /* initialize the framework and the underlying RT kernel */
     BSP_init(); /* initialize the Board Support Package */
@@ -50,10 +36,91 @@ int main() {
     QACTIVE_START(AO_Blinky,      /* AO pointer to start */
                   1U,             /* unique QP priority of the AO */
                   l_blinkyQSto,   /* storage for the AO's queue */
-                  Q_DIM(l_blinkyQSto), /* lenght of the queue [entries] */
+                  Q_DIM(l_blinkyQSto), /* length of the queue [entries] */
                   (void *)0,      /* stack storage (not used in QK) */
                   0U,             /* stack size [bytes] (not used in QK) */
                   (QEvt *)0);     /* initial event (or 0) */
+
+    User_ctor();
+    QACTIVE_START(AO_User,
+                  2U, /* This must be a unique QP priority ID */
+                  l_userQSto,
+                  Q_DIM(l_userQSto),
+                  (void *)0,
+                  0U,
+                  (QEvt*)0);
+
+	Screen_ctor();
+	QACTIVE_START(AO_Screen,
+				  3U, /* This must be a unique QP priority ID */
+				  l_screenQSto,
+				  Q_DIM(l_screenQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
+
+	Vessel_ctor();
+	QACTIVE_START(AO_Vessel,
+				  4U, /* This must be a unique QP priority ID */
+				  l_vesselQSto,
+				  Q_DIM(l_vesselQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
+
+	PhysicalUniverse_ctor();
+	QACTIVE_START(AO_PhysicalUniverse,
+				  5U, /* This must be a unique QP priority ID */
+				  l_physicaluniverseQSto,
+				  Q_DIM(l_physicaluniverseQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
+
+	TemporalUniverse_ctor();
+	QACTIVE_START(AO_TemporalUniverse,
+				  6U, /* This must be a unique QP priority ID */
+				  l_temporaluniverseQSto,
+				  Q_DIM(l_temporaluniverseQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
+
+	StaticBehaviour_ctor();
+	QACTIVE_START(AO_StaticBehaviour,
+				  7U, /* This must be a unique QP priority ID */
+				  l_staticbehaviourQSto,
+				  Q_DIM(l_staticbehaviourQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
+
+	ControlledBehaviour_ctor();
+	QACTIVE_START(AO_ControlledBehaviour,
+				  8U, /* This must be a unique QP priority ID */
+				  l_controlledbehaviourQSto,
+				  Q_DIM(l_controlledbehaviourQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
+
+	PriorityQueueBehaviour_ctor();
+	QACTIVE_START(AO_PriorityQueueBehaviour,
+				  9U, /* This must be a unique QP priority ID */
+				  l_priorityqueuebehaviourQSto,
+				  Q_DIM(l_priorityqueuebehaviourQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
+
+	PriorityCurveBehaviour_ctor();
+	QACTIVE_START(AO_PriorityCurveBehaviour,
+				  10U, /* This must be a unique QP priority ID */
+				  l_prioritycurvebehaviourQSto,
+				  Q_DIM(l_prioritycurvebehaviourQSto),
+				  (void *)0,
+				  0U,
+				  (QEvt*)0);
 
     return QF_run(); /* run the QF application */
 }

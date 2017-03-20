@@ -34,13 +34,7 @@
 #ifndef blinky_h
 #define blinky_h
 
-enum BlinkySignals {
-    DUMMY_SIG = Q_USER_SIG,
-    MAX_PUB_SIG,          /* the last published signal */
-
-    TIMEOUT_SIG,
-    MAX_SIG               /* the last signal */
-};
+#include "signals.h"
 
 void Blinky_ctor(void);
 extern QActive * const AO_Blinky; /* opaque pointer */
