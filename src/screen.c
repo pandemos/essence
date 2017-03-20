@@ -48,10 +48,16 @@ QState Screen_login(Screen * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
         case Q_ENTRY_SIG: {
+        	BSP_init_ui();
         	printf("[Screen] Login\n");
         	BSP_show_screen(UI_LOGIN);
             status = Q_HANDLED();
             break;
+        }
+        case Q_EXIT_SIG: {
+        	BSP_deactivate_ui();
+        	status = Q_HANDLED();
+			break;
         }
         case LOGIN: {
             UserEvt* pe = Q_NEW(UserEvt, VERIFY_USER);

@@ -55,14 +55,19 @@ typedef struct UiInGameTag {
 
 } UiInGameData;
 
-void const BSP_set_character_data(UiCharacterData data);
-void const BSP_set_user_data(UiUserData data);
-void const BSP_set_in_game_data(UiInGameData data);
+void BSP_init_ui(void);
+void BSP_deactivate_ui(void);
+void BSP_set_character_data(UiCharacterData data);
+void BSP_set_user_data(UiUserData data);
+void BSP_set_in_game_data(UiInGameData data);
 
-int const BSP_data_get_int(enum_t key);
-void const BSP_data_set_int(enum_t key, int value);
+// Database support
+void BSP_data_init(void);
+void BSP_data_deactivate(void);
+int BSP_data_get_int(enum_t key);
+void BSP_data_set_int(enum_t key, int value);
 
-int const BSP_data_get_string(enum_t key, char* string_data);
-void const BSP_data_set_string(enum_t key, size_t string_data_size, char* string_data);
+int BSP_data_get_string(enum_t key, char* string_data);
+void BSP_data_set_string(enum_t key, size_t string_data_size, char* string_data);
 
 #endif /* bsp_h */

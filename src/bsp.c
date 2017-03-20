@@ -75,32 +75,48 @@ void BSP_init() {
            QP_VERSION_STR);
 }
 
+void BSP_init_ui(void) {
+	// TODO
+}
+
+void BSP_deactivate_ui(void) {
+	// TODO
+}
+
 // Update the UI to show a particular screen
 void BSP_show_screen(enum_t screen) {
 	// TODO
 }
 
-void const BSP_set_character_data(UiCharacterData data) {
+void BSP_set_character_data(UiCharacterData data) {
 	// TODO
 }
 
-void const BSP_set_user_data(UiUserData data) {
+void BSP_set_user_data(UiUserData data) {
 	// TODO
 }
 
-void const BSP_set_in_game_data(UiInGameData data) {
+void BSP_set_in_game_data(UiInGameData data) {
 	// TODO
 }
 
 // Forward-declare internals
 Datum* get_data_obj_by_key(enum_t key);
 
-int const BSP_data_get_int(enum_t key) {
+void BSP_data_init(void) {
+	// TODO: This should connect to or open the actual database
+}
+
+void BSP_data_deactivate(void) {
+	// TODO: This should disconnect or close the actual database
+}
+
+int BSP_data_get_int(enum_t key) {
 	Datum* datum = get_data_obj_by_key(key);
 	Q_ASSERT(datum > 0 && datum->type == DATA_TYPE_INT);
 	return (int)datum->value;
 }
-void const BSP_data_set_int(enum_t key, int value) {
+void BSP_data_set_int(enum_t key, int value) {
 	Datum* datum = get_data_obj_by_key(key);
 	if (datum == 0) {
 		data[data_size].key = key;
@@ -114,14 +130,14 @@ void const BSP_data_set_int(enum_t key, int value) {
 	data[data_size].value = (void*)value;
 }
 
-int const BSP_data_get_string(enum_t key, char* string_data) {
+int BSP_data_get_string(enum_t key, char* string_data) {
 	Datum* datum = get_data_obj_by_key(key);
 	Q_ASSERT(datum > 0 && datum->type == DATA_TYPE_STRING);
 	string_data = (char*)datum->value;
 	return (int)datum->value_size;
 }
 
-void const BSP_data_set_string(enum_t key, size_t string_data_size, char* string_data) {
+void BSP_data_set_string(enum_t key, size_t string_data_size, char* string_data) {
 	Datum* datum = get_data_obj_by_key(key);
 	if (datum == 0) {
 		data[data_size].key = key;

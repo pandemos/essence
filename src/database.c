@@ -42,12 +42,16 @@ QState Database_active(Database * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
         case Q_ENTRY_SIG: {
-            status = Q_HANDLED();
+            BSP_data_init();
             BSP_data_set_int(DATA_UNKNOWN, 42);
             int setting = -1;
             setting = BSP_data_get_int(DATA_UNKNOWN);
-            printf("[DATABASE] Roundtrip success for setting: %d\n", setting);
+            printf("[Database] Roundtrip success for setting: %d\n", setting);
+            status = Q_HANDLED();
             break;
+        }
+        case Q_EXIT_SIG: {
+        	BSP_data_deactivate();
         }
         default: {
             status = Q_SUPER(&QHsm_top);
