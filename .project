@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>qf-template</name>
+	<name>essence</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -27,7 +27,7 @@
 		<link>
 			<name>qf</name>
 			<type>2</type>
-			<location>/home/allison/src/qf-template/src/qf</location>
+			<location>/home/allison/src/essence/src/qf</location>
 		</link>
 	</linkedResources>
 </projectDescription>

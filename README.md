@@ -1,2 +1,2 @@
-# qf-template
-Template for starting a Quantum Framework project
+# essence
+Game engine based on Quantum Framework
