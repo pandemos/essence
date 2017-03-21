@@ -104,9 +104,6 @@ void ui_input() {
 	nk_input_begin(ctx);
 	while (XPending(xw.dpy)) {
 		XNextEvent(xw.dpy, &evt);
-		if (evt.type == ClientMessage) {
-			return;
-		}
 		if (XFilterEvent(&evt, xw.win)) return;
 		nk_xlib_handle_event(xw.dpy, xw.screen, xw.win, &evt);
 	}
