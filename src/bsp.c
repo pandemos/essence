@@ -5,6 +5,8 @@
 
 #include "signals.h"
 
+#include "ui.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>      /* for memcpy() and memset() */
@@ -67,6 +69,8 @@ void QF_onClockTick(void) {
         pe->key = ch;
         QF_PUBLISH((QEvent *)pe, 0);
     }
+
+    ui_tick();
 }
 /*..........................................................................*/
 void BSP_init() {
@@ -76,11 +80,11 @@ void BSP_init() {
 }
 
 void BSP_init_ui(void) {
-	// TODO
+	ui();
 }
 
 void BSP_deactivate_ui(void) {
-	// TODO
+	ui_cleanup();
 }
 
 // Update the UI to show a particular screen
@@ -111,44 +115,6 @@ void BSP_data_deactivate(void) {
 	// TODO: This should disconnect or close the actual database
 }
 
-int BSP_data_get_int(enum_t key) {
-	Datum* datum = get_data_obj_by_key(key);
-	Q_ASSERT(datum > 0 && datum->type == DATA_TYPE_INT);
-	return (int)datum->value;
-}
-void BSP_data_set_int(enum_t key, int value) {
-	Datum* datum = get_data_obj_by_key(key);
-	if (datum == 0) {
-		data[data_size].key = key;
-		data[data_size].type = DATA_TYPE_INT;
-		data[data_size].value_size = sizeof(int);
-		data[data_size].value = (void*)value;
-		datum = &data[data_size];
-		data_size++;
-	}
-	data[data_size].value_size = sizeof(int);
-	data[data_size].value = (void*)value;
-}
-
-int BSP_data_get_string(enum_t key, char* string_data) {
-	Datum* datum = get_data_obj_by_key(key);
-	Q_ASSERT(datum > 0 && datum->type == DATA_TYPE_STRING);
-	string_data = (char*)datum->value;
-	return (int)datum->value_size;
-}
-
-void BSP_data_set_string(enum_t key, size_t string_data_size, char* string_data) {
-	Datum* datum = get_data_obj_by_key(key);
-	if (datum == 0) {
-		data[data_size].key = key;
-		data[data_size].type = DATA_TYPE_STRING;
-		datum = &data[data_size];
-		data_size++;
-	}
-	data[data_size].value_size = string_data_size;
-	data[data_size].value = (void*)string_data;
-}
-
 /*..........................................................................*/
 void Q_onAssert(char const *module, int loc) {
     (void)module;
@@ -160,11 +126,3 @@ void Q_onAssert(char const *module, int loc) {
 
 // Internals
 
-Datum* get_data_obj_by_key(enum_t key) {
-	for (int i = 0; i < 512; i++) {
-		if (data[i].key == key) {
-			return &data[i];
-		}
-	}
-	return (Datum*)0;
-}

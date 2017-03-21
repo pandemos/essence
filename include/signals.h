@@ -37,6 +37,13 @@ enum Signals {
     MAX_SIG               /* the last signal */
 };
 
+enum UiSignals {
+	UI_LOGIN = 100,
+	UI_CHARACTER_CREATE,
+	UI_CHARACTER_SELECT,
+	UI_IN_GAME
+};
+
 typedef struct KeyPressedTag {
 	QEvt super;
 

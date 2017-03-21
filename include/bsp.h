@@ -7,13 +7,6 @@ void BSP_init(void);
 
 void BSP_show_screen(enum_t screen);
 
-enum UiSignals {
-	UI_LOGIN = 100,
-	UI_CHARACTER_CREATE,
-	UI_CHARACTER_SELECT,
-	UI_IN_GAME
-};
-
 enum DataTypes {
 	DATA_TYPE_NULL = 0,
 	DATA_TYPE_INT,
@@ -64,10 +57,5 @@ void BSP_set_in_game_data(UiInGameData data);
 // Database support
 void BSP_data_init(void);
 void BSP_data_deactivate(void);
-int BSP_data_get_int(enum_t key);
-void BSP_data_set_int(enum_t key, int value);
-
-int BSP_data_get_string(enum_t key, char* string_data);
-void BSP_data_set_string(enum_t key, size_t string_data_size, char* string_data);
 
 #endif /* bsp_h */
