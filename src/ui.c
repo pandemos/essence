@@ -110,57 +110,47 @@ void ui_login() {
 		nk_label(ctx, "Password", NK_TEXT_LEFT);
 		nk_text(ctx, "Password", 8, NK_TEXT_LEFT);
 		nk_layout_row_dynamic(ctx, 25, 1);
-		if (nk_button_label(ctx, "Login"))
-			fprintf(stdout, "button pressed\n");
+		if (nk_button_label(ctx, "Login")) {
+			printf("Login button pressed\n");
+			LoginEvt* pe = Q_NEW(LoginEvt, LOGIN);
+			pe->username = "cat\0";
+			pe->username_size = 4;
+			pe->password = "catpassword\0";
+			pe->password_size = 12;
+			QF_PUBLISH((QEvent *)pe, 0);
+		}
+
 	}
 	nk_end(ctx);
-
-    if (nk_window_is_closed(ctx, "Essence - Login")) {
-    	ui_cleanup();
-    	return;
-    }
 }
 
 void ui_character_create() {
 	/* GUI */
+	printf("ui_character_create\n");
 	if (nk_begin(ctx, "Essence - Character Creation", nk_rect(50, 50, 200, 200),
-		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE|NK_WINDOW_TITLE))
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE))
 	{
+
 	}
 	nk_end(ctx);
-
-    if (nk_window_is_closed(ctx, "Essence - Character Creation")) {
-    	ui_cleanup();
-    	return;
-    }
 }
 
 void ui_character_select() {
 	/* GUI */
 	if (nk_begin(ctx, "Essence - Character Select", nk_rect(50, 50, 200, 200),
-		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE|NK_WINDOW_TITLE))
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE))
 	{
 	}
 	nk_end(ctx);
-
-    if (nk_window_is_closed(ctx, "Essence - Character Select")) {
-    	ui_cleanup();
-    	return;
-    }
 }
 
 void ui_in_game() {
 	/* GUI */
 	if (nk_begin(ctx, "Essence - In Game", nk_rect(50, 50, 200, 200),
-		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE|NK_WINDOW_TITLE))
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE))
 	{
 	}
 	nk_end(ctx);
-
-    if (nk_window_is_closed(ctx, "Essence - In Game")) {
-    	ui_cleanup();
-    	return;
-    }
 }
 
 void ui_tick(enum_t current_window) {
@@ -173,7 +163,6 @@ void ui_tick(enum_t current_window) {
 	while (XPending(xw.dpy)) {
 		XNextEvent(xw.dpy, &evt);
 		if (evt.type == ClientMessage) {
-			ui_cleanup();
 			return;
 		}
 		if (XFilterEvent(&evt, xw.win)) return;

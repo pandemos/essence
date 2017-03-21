@@ -62,6 +62,7 @@ void QF_onClockTick(void) {
         QF_PUBLISH((QEvent *)pe, 0);
     }
 
+    printf("Tick on current window: %d\n", current_window);
     ui_tick(current_window);
 }
 /*..........................................................................*/

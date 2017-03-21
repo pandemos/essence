@@ -48,6 +48,8 @@ QState Screen_login(Screen * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
         case Q_ENTRY_SIG: {
+        	QActive_subscribe(&me->super, USER_VALID);
+        	QActive_subscribe(&me->super, USER_INVALID);
         	BSP_init_ui();
         	printf("[Screen] Login\n");
         	BSP_show_screen(UI_LOGIN);
@@ -55,20 +57,8 @@ QState Screen_login(Screen * const me, QEvt const * const e) {
             break;
         }
         case Q_EXIT_SIG: {
-        	BSP_deactivate_ui();
         	status = Q_HANDLED();
 			break;
-        }
-        case LOGIN: {
-            UserEvt* pe = Q_NEW(UserEvt, VERIFY_USER);
-            pe->username_size = 4;
-            pe->username = "cat\0";
-            pe->password_size = 4;
-            pe->password = "cat\0";
-            pe->n_characters = 0;
-            QF_PUBLISH((QEvent *)pe, 0);
-        	status = Q_HANDLED();
-        	break;
         }
         case USER_VALID: {
         	UserEvt* pe = Q_EVT_CAST(UserEvt);
@@ -99,6 +89,8 @@ QState Screen_character_create(Screen * const me, QEvt const * const e) {
     switch (e->sig) {
         case Q_ENTRY_SIG: {
         	printf("[Screen] Character Creation\n");
+        	QActive_subscribe(&me->super, CHARACTER_CREATED);
+        	QActive_subscribe(&me->super, CHARACTER_CREATION_FAILED);
         	BSP_show_screen(UI_CHARACTER_CREATE);
             status = Q_HANDLED();
             break;
@@ -126,6 +118,7 @@ QState Screen_character_select(Screen * const me, QEvt const * const e) {
     switch (e->sig) {
         case Q_ENTRY_SIG: {
         	printf("[Screen] Character Selection\n");
+        	QActive_subscribe(&me->super, ENTER_GAME);
         	BSP_show_screen(UI_CHARACTER_SELECT);
             status = Q_HANDLED();
             break;
@@ -146,6 +139,7 @@ QState Screen_in_game(Screen * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
         case Q_ENTRY_SIG: {
+        	QActive_subscribe(&me->super, EXIT_GAME);
         	printf("[Screen] In Game\n");
         	BSP_show_screen(UI_IN_GAME);
             status = Q_HANDLED();

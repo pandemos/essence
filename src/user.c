@@ -42,8 +42,25 @@ QState User_active(User * const me, QEvt const * const e) {
     QState status;
     switch (e->sig) {
         case Q_ENTRY_SIG: {
+        	QActive_subscribe(&me->super, LOGIN);
             status = Q_HANDLED();
             break;
+        }
+        case LOGIN: {
+        	printf("received login request\n");
+        	LoginEvt* evt = Q_EVT_CAST(LoginEvt);
+        	// TODO: Actually verify user
+        	UserEvt* pe = Q_NEW(UserEvt, USER_VALID);
+        	pe->user_id = 1U;
+        	pe->n_characters = 0;
+        	pe->password = evt->password;
+        	pe->username = evt->username;
+        	pe->username_size = 0;
+        	pe->password_size = 0;
+        	QF_PUBLISH((QEvent *)pe, me);
+
+        	status = Q_HANDLED(); // TODO: Transition to a "user logged in" state.
+        	break;
         }
         default: {
             status = Q_SUPER(&QHsm_top);

@@ -16,6 +16,8 @@
 int main() {
     static QSubscrList l_subscrSto[MAX_PUB_SIG];
     static QF_MPOOL_EL(QEvt) l_smlPoolSto[20]; /* small pool */
+    static QF_MPOOL_EL(LoginEvt) l_loginevtPoolSto[20];
+    static QF_MPOOL_EL(UserEvt) l_userevtPoolSto[20];
 
     static QEvt const *l_databaseQSto[10];
     static QEvt const *l_userQSto[10];
@@ -34,6 +36,8 @@ int main() {
 
     QF_psInit(l_subscrSto, Q_DIM(l_subscrSto));
     QF_poolInit(l_smlPoolSto, sizeof(l_smlPoolSto), sizeof(l_smlPoolSto[0]));
+    QF_poolInit(l_loginevtPoolSto, sizeof(l_loginevtPoolSto), sizeof(l_loginevtPoolSto[0]));
+    QF_poolInit(l_userevtPoolSto, sizeof(l_userevtPoolSto), sizeof(l_userevtPoolSto[0]));
 
     /* instantiate and start the active objects... */
 
