@@ -23,15 +23,7 @@ Q_DEFINE_THIS_FILE
 /* Local objects -----------------------------------------------------------*/
 static struct termios l_tsav; /* structure with saved terminal attributes */
 
-// TODO: This is the worst possible database
-typedef struct {
-	enum_t key;
-	enum_t type;
-	size_t value_size;
-	void* value;
-} Datum;
-static size_t data_size;
-static Datum data[512];
+static enum_t current_window;
 
 /*..........................................................................*/
 void QF_onStartup(void) {     /* startup callback */
@@ -70,7 +62,7 @@ void QF_onClockTick(void) {
         QF_PUBLISH((QEvent *)pe, 0);
     }
 
-    ui_tick();
+    ui_tick(current_window);
 }
 /*..........................................................................*/
 void BSP_init() {
@@ -89,7 +81,7 @@ void BSP_deactivate_ui(void) {
 
 // Update the UI to show a particular screen
 void BSP_show_screen(enum_t screen) {
-	// TODO
+	current_window = screen;
 }
 
 void BSP_set_character_data(UiCharacterData data) {
@@ -103,9 +95,6 @@ void BSP_set_user_data(UiUserData data) {
 void BSP_set_in_game_data(UiInGameData data) {
 	// TODO
 }
-
-// Forward-declare internals
-Datum* get_data_obj_by_key(enum_t key);
 
 void BSP_data_init(void) {
 	// TODO: This should connect to or open the actual database

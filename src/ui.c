@@ -11,6 +11,7 @@
 #include <time.h>
 
 #include "qpc.h"
+#include "signals.h"
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -144,7 +145,30 @@ int ui(void)
 
 }
 
-void ui_tick() {
+void ui_login() {
+	/* GUI */
+	if (nk_begin(ctx, "Essence - Login", nk_rect(50, 50, 200, 200),
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE|NK_WINDOW_TITLE))
+	{
+		nk_layout_row_dynamic(ctx, 30, 2);
+		nk_label(ctx, "Username", NK_TEXT_LEFT);
+		nk_text(ctx, "Username", 8, NK_TEXT_LEFT);
+		nk_layout_row_dynamic(ctx, 30, 2);
+		nk_label(ctx, "Password", NK_TEXT_LEFT);
+		nk_text(ctx, "Password", 8, NK_TEXT_LEFT);
+		nk_layout_row_dynamic(ctx, 25, 1);
+		if (nk_button_label(ctx, "Login"))
+			fprintf(stdout, "button pressed\n");
+	}
+	nk_end(ctx);
+
+    if (nk_window_is_closed(ctx, "Essence - Login")) {
+    	ui_cleanup();
+    	return;
+    }
+}
+
+void ui_tick(enum_t current_window) {
 		if (running == 0) {
 			return;
 		}
@@ -163,42 +187,16 @@ void ui_tick() {
         }
         nk_input_end(ctx);
 
-        /* GUI */
-        if (nk_begin(ctx, "Demo", nk_rect(50, 50, 200, 200),
-            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-            NK_WINDOW_CLOSABLE|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
-        {
-            enum {EASY, HARD};
-            static int op = EASY;
-            static int property = 20;
-
-            nk_layout_row_static(ctx, 30, 80, 1);
-            if (nk_button_label(ctx, "button"))
-                fprintf(stdout, "button pressed\n");
-            nk_layout_row_dynamic(ctx, 30, 2);
-            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-            nk_layout_row_dynamic(ctx, 25, 1);
-            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
+        switch (current_window) {
+        case (UI_LOGIN): {
+        	ui_login();
+        	break;
         }
-        nk_end(ctx);
-        if (nk_window_is_closed(ctx, "Demo")) return;
+        }
 
-        /* -------------- EXAMPLES ---------------- */
-        /*calculator(ctx);*/
-        /*overview(ctx);*/
-        /*node_editor(ctx);*/
-        /* ----------------------------------------- */
-
-        /* Draw */
         XClearWindow(xw.dpy, xw.win);
         nk_xlib_render(xw.win, nk_rgb(30,30,30));
         XFlush(xw.dpy);
-
-        /* Timing */
-        dt = timestamp() - started;
-        if (dt < DTIME)
-            sleep_for(DTIME - dt);
     }
 
 void ui_cleanup() {
