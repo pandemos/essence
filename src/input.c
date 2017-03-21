@@ -58,15 +58,21 @@ QState Input_active(Input * const me, QEvt const * const e) {
     switch (e->sig) {
         case Q_ENTRY_SIG: {
         	QActive_subscribe(&me->super, KEY_PRESSED);
+        	QActive_subscribe(&me->super, QUIT);
             status = Q_HANDLED();
             break;
+        }
+        case QUIT: {
+        	BSP_deactivate_ui();
+        	status = Q_HANDLED();
+        	break;
         }
         case KEY_PRESSED: {
         	KeyPressedEvt* evt = Q_EVT_CAST(KeyPressedEvt);
         	char key = evt->key;
 
         	if (key == '\33') {
-        		QF_stop();
+        		BSP_deactivate_ui();
         	}
         	else if (key == '\n') {
         		// Enter, we should process what's been entered as a TODO

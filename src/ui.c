@@ -111,7 +111,6 @@ void ui_login() {
 		nk_text(ctx, "Password", 8, NK_TEXT_LEFT);
 		nk_layout_row_dynamic(ctx, 25, 1);
 		if (nk_button_label(ctx, "Login")) {
-			printf("Login button pressed\n");
 			LoginEvt* pe = Q_NEW(LoginEvt, LOGIN);
 			pe->username = "cat\0";
 			pe->username_size = 4;
@@ -126,7 +125,6 @@ void ui_login() {
 
 void ui_character_create() {
 	/* GUI */
-	printf("ui_character_create\n");
 	if (nk_begin(ctx, "Essence - Character Creation", nk_rect(50, 50, 200, 200),
 		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE))
 	{
@@ -169,6 +167,17 @@ void ui_tick(enum_t current_window) {
 		nk_xlib_handle_event(xw.dpy, xw.screen, xw.win, &evt);
 	}
 	nk_input_end(ctx);
+
+	if (nk_begin(ctx, "Essence - Controls", nk_rect(5, 5, 200, 200),
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE))
+	{
+		nk_layout_row_dynamic(ctx, 30, 2);
+		if (nk_button_label(ctx, "Exit")) {
+			QEvent* pe = Q_NEW(QEvent, QUIT);
+			QF_PUBLISH(pe, 0);
+		}
+	}
+	nk_end(ctx);
 
 	switch (current_window) {
 	case (UI_LOGIN): {

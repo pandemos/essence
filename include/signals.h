@@ -33,6 +33,8 @@ enum Signals {
 	DESTROY_VESSEL_FAILED,
 	MOVE_VESSEL,
 
+	QUIT,
+
     MAX_PUB_SIG,          /* the last published signal */
     MAX_SIG               /* the last signal */
 };
