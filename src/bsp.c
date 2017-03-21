@@ -29,9 +29,7 @@ static enum_t current_window;
 void QF_onStartup(void) {     /* startup callback */
     struct termios tio;       /* modified terminal attributes */
 
-    tcgetattr(0, &l_tsav);    /* save the current terminal attributes */void* const BSP_data_get(enum_t key) {
-
-    }
+    tcgetattr(0, &l_tsav);    /* save the current terminal attributes */
     tcgetattr(0, &tio);       /* obtain the current terminal attributes */
     tio.c_lflag &= ~(ICANON | ECHO); /* disable the canonical mode & echo */
     tcsetattr(0, TCSANOW, &tio);  /* set the new attributes */
@@ -49,18 +47,6 @@ void QF_onClockTick(void) {
     fd_set con;               /* FD set representing the console */
 
     QF_TICK_X(0U, (void *)0); /* process all QF time events at rate 0 */
-
-    FD_ZERO(&con);
-    FD_SET(0, &con);
-    /* check if a console input is available, returns immediately */
-    if (0 != select(1, &con, 0, 0, &timeout)) { /* any descriptor set? */
-        char ch;
-        read(0, &ch, 1);
-
-        KeyPressedEvt* pe = Q_NEW(KeyPressedEvt, KEY_PRESSED);
-        pe->key = ch;
-        QF_PUBLISH((QEvent *)pe, 0);
-    }
 
     ui_tick(current_window);
 }

@@ -116,7 +116,7 @@ void ui_input() {
 void ui_controls() {
 	if (nk_begin(ctx, "Essence - Controls", nk_rect(0, 0, WINDOW_WIDTH, 50), 0))
 	{
-		nk_layout_row_dynamic(ctx, 30, 2);
+		nk_layout_row_dynamic(ctx, 30, 1);
 		if (nk_button_label(ctx, "Exit")) {
 			QEvent* pe = Q_NEW(QEvent, QUIT);
 			QF_PUBLISH(pe, 0);
@@ -125,6 +125,25 @@ void ui_controls() {
 	nk_end(ctx);
 }
 
+static short ui_should_show_message = 0;
+static char* ui_message_text = "";
+void ui_message(const char* msg) {
+	if (nk_begin(ctx, "Essence - Message", nk_rect(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 200, 100), 0))
+	{
+		nk_layout_row_dynamic(ctx, 30, 1);
+		nk_label(ctx, msg, NK_TEXT_LEFT);
+		nk_layout_row_dynamic(ctx, 30, 1);
+		if (nk_button_label(ctx, "OK")) {
+			ui_should_show_message = 0;
+		}
+	}
+	nk_end(ctx);
+}
+
+static int ui_login_username_len = 0;
+static char ui_login_username_buffer[256];
+static int ui_login_password_len = 0;
+static char ui_login_password_buffer[256];
 void ui_login() {
 	/* GUI */
 	if (nk_begin(ctx, "Essence - Login", nk_rect(50, 50, 200, 200),
@@ -132,18 +151,30 @@ void ui_login() {
 	{
 		nk_layout_row_dynamic(ctx, 30, 2);
 		nk_label(ctx, "Username", NK_TEXT_LEFT);
-		nk_text(ctx, "Username", 8, NK_TEXT_LEFT);
+
+		nk_flags event = nk_edit_string(ctx, NK_EDIT_FIELD, ui_login_username_buffer, &ui_login_username_len, 256, 0);
 		nk_layout_row_dynamic(ctx, 30, 2);
 		nk_label(ctx, "Password", NK_TEXT_LEFT);
-		nk_text(ctx, "Password", 8, NK_TEXT_LEFT);
+		event = nk_edit_string(ctx, NK_EDIT_FIELD, ui_login_password_buffer, &ui_login_password_len, 256, 0);
 		nk_layout_row_dynamic(ctx, 25, 1);
 		if (nk_button_label(ctx, "Login")) {
-			LoginEvt* pe = Q_NEW(LoginEvt, LOGIN);
-			pe->username = "cat\0";
-			pe->username_size = 4;
-			pe->password = "catpassword\0";
-			pe->password_size = 12;
-			QF_PUBLISH((QEvent *)pe, 0);
+			if (ui_login_username_len == 0) {
+				ui_message_text = "Enter a username\0";
+				ui_should_show_message = 1;
+			}
+			else if (ui_login_password_len == 0) {
+				ui_message_text = "Enter a password\0";
+				ui_should_show_message = 1;
+			}
+			else {
+				ui_should_show_message = 0;
+				LoginEvt* pe = Q_NEW(LoginEvt, LOGIN);
+				pe->username = ui_login_username_buffer;
+				pe->username_size = ui_login_username_len;
+				pe->password = ui_login_password_buffer;
+				pe->password_size = ui_login_password_len;
+				QF_PUBLISH((QEvent *)pe, 0);
+			}
 		}
 
 	}
@@ -205,6 +236,10 @@ void ui_tick(enum_t current_window) {
 	}
 	}
 
+	if (ui_should_show_message) {
+		ui_message(ui_message_text);
+	}
+
 	if (running == 0) {
 		return;
 	}
@@ -216,6 +251,8 @@ void ui_tick(enum_t current_window) {
 
 void ui_cleanup() {
 	running = 0;
+	ui_should_show_message = 0;
+
     nk_xfont_del(xw.dpy, xw.font);
     nk_xlib_shutdown();
     XUnmapWindow(xw.dpy, xw.win);
