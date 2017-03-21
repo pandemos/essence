@@ -98,10 +98,37 @@ int ui(void)
 
 }
 
+void ui_input() {
+	/* Input */
+	XEvent evt;
+	nk_input_begin(ctx);
+	while (XPending(xw.dpy)) {
+		XNextEvent(xw.dpy, &evt);
+		if (evt.type == ClientMessage) {
+			return;
+		}
+		if (XFilterEvent(&evt, xw.win)) return;
+		nk_xlib_handle_event(xw.dpy, xw.screen, xw.win, &evt);
+	}
+	nk_input_end(ctx);
+}
+
+void ui_controls() {
+	if (nk_begin(ctx, "Essence - Controls", nk_rect(0, 0, WINDOW_WIDTH, 50), 0))
+	{
+		nk_layout_row_dynamic(ctx, 30, 2);
+		if (nk_button_label(ctx, "Exit")) {
+			QEvent* pe = Q_NEW(QEvent, QUIT);
+			QF_PUBLISH(pe, 0);
+		}
+	}
+	nk_end(ctx);
+}
+
 void ui_login() {
 	/* GUI */
 	if (nk_begin(ctx, "Essence - Login", nk_rect(50, 50, 200, 200),
-		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE|NK_WINDOW_TITLE))
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE))
 	{
 		nk_layout_row_dynamic(ctx, 30, 2);
 		nk_label(ctx, "Username", NK_TEXT_LEFT);
@@ -155,29 +182,9 @@ void ui_tick(enum_t current_window) {
 	if (running == 0) {
 		return;
 	}
-	/* Input */
-	XEvent evt;
-	nk_input_begin(ctx);
-	while (XPending(xw.dpy)) {
-		XNextEvent(xw.dpy, &evt);
-		if (evt.type == ClientMessage) {
-			return;
-		}
-		if (XFilterEvent(&evt, xw.win)) return;
-		nk_xlib_handle_event(xw.dpy, xw.screen, xw.win, &evt);
-	}
-	nk_input_end(ctx);
+	ui_input();
 
-	if (nk_begin(ctx, "Essence - Controls", nk_rect(5, 5, 200, 200),
-		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE))
-	{
-		nk_layout_row_dynamic(ctx, 30, 2);
-		if (nk_button_label(ctx, "Exit")) {
-			QEvent* pe = Q_NEW(QEvent, QUIT);
-			QF_PUBLISH(pe, 0);
-		}
-	}
-	nk_end(ctx);
+	ui_controls();
 
 	switch (current_window) {
 	case (UI_LOGIN): {
