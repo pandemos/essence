@@ -6,6 +6,7 @@
 #include "signals.h"
 
 #include "ui.h"
+#include "db.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -55,6 +56,9 @@ void BSP_init() {
     printf("Essence\nQP version: %s\n"
            "Press ESC to quit...\n",
            QP_VERSION_STR);
+
+    BSP_init_ui();
+    BSP_data_init();
 }
 
 void BSP_init_ui(void) {
@@ -82,12 +86,19 @@ void BSP_set_in_game_data(UiInGameData data) {
 	// TODO
 }
 
+void* data_ptr;
+
 void BSP_data_init(void) {
-	// TODO: This should connect to or open the actual database
+	// One for each data type
+	db_init("./data.sqlite", &data_ptr);
 }
 
 void BSP_data_deactivate(void) {
-	// TODO: This should disconnect or close the actual database
+	db_deactivate(data_ptr);
+}
+
+void BSP_data_query(const char* query) {
+	db_query(data_ptr, query);
 }
 
 /*..........................................................................*/

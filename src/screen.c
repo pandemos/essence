@@ -50,7 +50,6 @@ QState Screen_login(Screen * const me, QEvt const * const e) {
         case Q_ENTRY_SIG: {
         	QActive_subscribe(&me->super, USER_VALID);
         	QActive_subscribe(&me->super, USER_INVALID);
-        	BSP_init_ui();
         	printf("[Screen] Login\n");
         	BSP_show_screen(UI_LOGIN);
             status = Q_HANDLED();
