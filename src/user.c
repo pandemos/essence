@@ -43,6 +43,7 @@ QState User_active(User * const me, QEvt const * const e) {
     switch (e->sig) {
         case Q_ENTRY_SIG: {
         	QActive_subscribe(&me->super, LOGIN);
+        	QActive_subscribe(&me->super, USER_SIG);
             status = Q_HANDLED();
             break;
         }
@@ -60,6 +61,11 @@ QState User_active(User * const me, QEvt const * const e) {
         	QF_PUBLISH((QEvent *)pe, me);
 
         	status = Q_HANDLED(); // TODO: Transition to a "user logged in" state.
+        	break;
+        }
+        case USER_SIG: {
+        	printf("Received updated user info\n");
+        	status = Q_HANDLED();
         	break;
         }
         default: {

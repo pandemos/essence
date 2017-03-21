@@ -52,6 +52,7 @@ QState Input_active(Input * const me, QEvt const * const e) {
         }
         case QUIT: {
         	BSP_deactivate_ui();
+        	BSP_data_deactivate();
         	status = Q_HANDLED();
         	break;
         }

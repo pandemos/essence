@@ -11,26 +11,26 @@
 #include "priorityqueuebehaviour.h"
 #include "prioritycurvebehaviour.h"
 #include "bsp.h"
+#include "db.h"
+
+static QSubscrList l_subscrSto[MAX_PUB_SIG];
+static QF_MPOOL_EL(QEvt) l_smlPoolSto[20]; /* small pool */
+static QF_MPOOL_EL(LoginEvt) l_loginevtPoolSto[20];
+static QF_MPOOL_EL(UserEvt) l_userevtPoolSto[20];
+
+static QEvt const *l_userQSto[10];
+static QEvt const *l_screenQSto[10];
+static QEvt const *l_vesselQSto[10];
+static QEvt const *l_physicaluniverseQSto[10];
+static QEvt const *l_temporaluniverseQSto[10];
+static QEvt const *l_staticbehaviourQSto[10];
+static QEvt const *l_directedbehaviourQSto[10];
+static QEvt const *l_priorityqueuebehaviourQSto[10];
+static QEvt const *l_prioritycurvebehaviourQSto[10];
+static QEvt const *l_inputQSto[10];
 
 /*..........................................................................*/
 int main() {
-    static QSubscrList l_subscrSto[MAX_PUB_SIG];
-    static QF_MPOOL_EL(QEvt) l_smlPoolSto[20]; /* small pool */
-    static QF_MPOOL_EL(LoginEvt) l_loginevtPoolSto[20];
-    static QF_MPOOL_EL(UserEvt) l_userevtPoolSto[20];
-
-    static QEvt const *l_databaseQSto[10];
-    static QEvt const *l_userQSto[10];
-    static QEvt const *l_screenQSto[10];
-    static QEvt const *l_vesselQSto[10];
-    static QEvt const *l_physicaluniverseQSto[10];
-    static QEvt const *l_temporaluniverseQSto[10];
-    static QEvt const *l_staticbehaviourQSto[10];
-    static QEvt const *l_directedbehaviourQSto[10];
-    static QEvt const *l_priorityqueuebehaviourQSto[10];
-    static QEvt const *l_prioritycurvebehaviourQSto[10];
-    static QEvt const *l_inputQSto[10];
-
     QF_init();  /* initialize the framework and the underlying RT kernel */
     BSP_init(); /* initialize the Board Support Package */
 
