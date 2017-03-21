@@ -85,26 +85,6 @@ sleep_for(long t)
     while(-1 == nanosleep(&req, &req));
 }
 
-/* ===============================================================
- *
- *                          EXAMPLE
- *
- * ===============================================================*/
-/* These are some code examples to provide a small overview of what can be
- * done with this library. To try out an example uncomment the include
- * and the corresponding function. */
-/*#include "../style.c"*/
-/*#include "../calculator.c"*/
-/*#include "../overview.c"*/
-/*#include "../node_editor.c"*/
-
-/* ===============================================================
- *
- *                          DEMO
- *
- * ===============================================================*/
-long dt;
-long started;
 XWindow xw;
 struct nk_context *ctx;
 static unsigned short running = 0;
@@ -168,36 +148,93 @@ void ui_login() {
     }
 }
 
+void ui_character_create() {
+	/* GUI */
+	if (nk_begin(ctx, "Essence - Character Creation", nk_rect(50, 50, 200, 200),
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE|NK_WINDOW_TITLE))
+	{
+	}
+	nk_end(ctx);
+
+    if (nk_window_is_closed(ctx, "Essence - Character Creation")) {
+    	ui_cleanup();
+    	return;
+    }
+}
+
+void ui_character_select() {
+	/* GUI */
+	if (nk_begin(ctx, "Essence - Character Select", nk_rect(50, 50, 200, 200),
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE|NK_WINDOW_TITLE))
+	{
+	}
+	nk_end(ctx);
+
+    if (nk_window_is_closed(ctx, "Essence - Character Select")) {
+    	ui_cleanup();
+    	return;
+    }
+}
+
+void ui_in_game() {
+	/* GUI */
+	if (nk_begin(ctx, "Essence - In Game", nk_rect(50, 50, 200, 200),
+		NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_CLOSABLE|NK_WINDOW_TITLE))
+	{
+	}
+	nk_end(ctx);
+
+    if (nk_window_is_closed(ctx, "Essence - In Game")) {
+    	ui_cleanup();
+    	return;
+    }
+}
+
 void ui_tick(enum_t current_window) {
-		if (running == 0) {
+	if (running == 0) {
+		return;
+	}
+	/* Input */
+	XEvent evt;
+	nk_input_begin(ctx);
+	while (XPending(xw.dpy)) {
+		XNextEvent(xw.dpy, &evt);
+		if (evt.type == ClientMessage) {
+			ui_cleanup();
 			return;
 		}
-        /* Input */
-        XEvent evt;
-        started = timestamp();
-        nk_input_begin(ctx);
-        while (XPending(xw.dpy)) {
-            XNextEvent(xw.dpy, &evt);
-            if (evt.type == ClientMessage) {
-            	ui_cleanup();
-            	return;
-            }
-            if (XFilterEvent(&evt, xw.win)) return;
-            nk_xlib_handle_event(xw.dpy, xw.screen, xw.win, &evt);
-        }
-        nk_input_end(ctx);
+		if (XFilterEvent(&evt, xw.win)) return;
+		nk_xlib_handle_event(xw.dpy, xw.screen, xw.win, &evt);
+	}
+	nk_input_end(ctx);
 
-        switch (current_window) {
-        case (UI_LOGIN): {
-        	ui_login();
-        	break;
-        }
-        }
+	switch (current_window) {
+	case (UI_LOGIN): {
+		ui_login();
+		break;
+	}
+	case (UI_CHARACTER_CREATE): {
+		ui_character_create();
+		break;
+	}
+	case (UI_CHARACTER_SELECT): {
+		ui_character_select();
+		break;
+	}
+	case (UI_IN_GAME): {
+		ui_in_game();
+		break;
+	}
+	}
 
-        XClearWindow(xw.dpy, xw.win);
-        nk_xlib_render(xw.win, nk_rgb(30,30,30));
-        XFlush(xw.dpy);
-    }
+	if (running == 0) {
+		return;
+	}
+
+	XClearWindow(xw.dpy, xw.win);
+	nk_xlib_render(xw.win, nk_rgb(30,30,30));
+	XFlush(xw.dpy);
+}
 
 void ui_cleanup() {
 	running = 0;
