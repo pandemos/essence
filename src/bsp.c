@@ -119,7 +119,7 @@ void BSP_data_deactivate(void) {
 }
 
 void BSP_data_create_user(ModelUser* user) {
-
+}
 
 void BSP_data_refresh_users() {
 
